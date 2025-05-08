@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>Kalkulatos Turunan Numerik</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 30px;
+      background: #f0f0f0;
+    }
+    .container {
+      background: white;
+      padding: 20px;
+      border-radius: 12px;
+      max-width: 500px;
+      margin: auto;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    input, button {
+      width: 100%;
+      padding: 10px;
+      margin: 8px 0;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+    }
+    button {
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #45a049;
+    }
+    .output {
+      margin-top: 15px;
+      font-size: 1.1em;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Kalkulatos Turunan Numerik</h2>
+    <label for="function">Fungsi (gunakan x, contoh: x*x + 3*x + 2):</label>
+    <input type="text" id="function" placeholder="Contoh: x*x + 3*x + 2">
+
+    <label for="xval">Nilai x:</label>
+    <input type="number" id="xval" step="any">
+
+    <label for="hval">Nilai h:</label>
+    <input type="number" id="hval" step="any">
+
+    <button onclick="calculate('forward')">Hitung Selisih-Maju</button>
+    <button onclick="calculate('backward')">Hitung Selisih-Mundur</button>
+
+    <div class="output" id="result"></div>
+  </div>
+
+  <script>
+    function evaluateFunction(expr, x) {
+      try {
+        // Gantilah 'x' dengan nilai x, lalu evaluasi
+        return eval(expr.replace(/x/g, `(${x})`));
+      } catch (err) {
+        return NaN;
+      }
+    }
+
+    function calculate(method) {
+      const expr = document.getElementById('function').value;
+      const x = parseFloat(document.getElementById('xval').value);
+      const h = parseFloat(document.getElementById('hval').value);
+      const resultDiv = document.getElementById('result');
+
+      if (!expr || isNaN(x) || isNaN(h)) {
+        resultDiv.textContent = "Mohon isi semua input dengan benar.";
+        return;
+      }
+
+      let derivative;
+
+      if (method === 'forward') {
+        const fx = evaluateFunction(expr, x);
+        const fxh = evaluateFunction(expr, x + h);
+        derivative = (fxh - fx) / h;
+      } else if (method === 'backward') {
+        const fx = evaluateFunction(expr, x);
+        const fxmh = evaluateFunction(expr, x - h);
+        derivative = (fx - fxmh) / h;
+      }
+
+      if (isNaN(derivative)) {
+        resultDiv.textContent = "Kesalahan saat evaluasi fungsi. Pastikan formatnya benar.";
+      } else {
+        resultDiv.textContent = `Turunan ${method === 'forward' ? 'Selisih-Maju' : 'Selisih-Mundur'}: ${derivative.toFixed(6)}`;
+      }
+    }
+  </script>
+</body>
+</html>
